@@ -1,0 +1,30 @@
+{
+  "name": "github-db",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:compile": "rollup -c",
+    "build:minify": "uglifyjs index.js -o index.min.js -c -m",
+    "build": "npm run build:compile && npm run build:minify",
+    "watch": "onchange src/*.js -- npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CoryMcCartan/github-db.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CoryMcCartan/github-db/issues"
+  },
+  "homepage": "https://github.com/CoryMcCartan/github-db#readme",
+  "dependencies": {
+    "github-api": "^3.0.0"
+  },
+  "devDependencies": {
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^3.0.0"
+  }
+}
