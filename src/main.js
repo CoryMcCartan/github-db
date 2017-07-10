@@ -1,14 +1,27 @@
 import GitHub from "github-api";
 
-async function main() {
-    const PAT = "74b3dbcf816b1a06c1011c1868e3b4ac088a35fc";
+/**
+ * Create database object.
+ *
+ * Options:
+ *  - PAT: GitHub Personal Access Token.  Needs repository permissions.
+ *  - db: Path to JSON database file. 'UserName:repo-name:master:path/to/file.json'
+ */
+async function create(opt) {
     let gh = new GitHub({
-        token: PAT,
+        token: opt.PAT,
     });
 
-    let repo = gh.getRepo("CoryMcCartan", "github-db");
-    let contents = await repo.getContents("master", "package.json");
-    console.log(contents);
+    let [user, repo, ref, path] = opt.db.split(":");
+    let repository = gh.getRepo(user, repo);
+
+    let raw = await repo.getContents(ref, path);
+    let data = JSON.parse(atob(raw.data.content));
+
+    return {
+    };
 }
 
-main();
+export default {
+    create,
+};
