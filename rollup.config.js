@@ -6,7 +6,7 @@ import globals from "rollup-plugin-node-globals";
 export default {
     entry: "src/main.js",
     format: "iife",
-    moduleName: "DB",
+    moduleName: "gDB",
     plugins: [ 
         resolve({
             jsnext: true,
@@ -17,5 +17,5 @@ export default {
         builtins(),
         globals(),
     ],
-    dest: "index.js"
+    dest: "gdb.js"
 };

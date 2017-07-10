@@ -1,4 +1,5 @@
 import GitHub from "github-api";
+import taffy from "../lib/taffy";
 
 /**
  * Create database object.
@@ -12,16 +13,31 @@ async function create(opt) {
         token: opt.PAT,
     });
 
-    let [user, repo, ref, path] = opt.db.split(":");
+    let [user, repo, branch, path] = opt.db.split(":");
     let repository = gh.getRepo(user, repo);
 
-    let raw = await repo.getContents(ref, path);
-    let data = JSON.parse(atob(raw.data.content));
+    let db;
+    try {
+        let raw = await repository.getContents(branch, path);
+        db = taffy(atob(raw.data.content));
+    } catch(e) {
+        if (!e.message.startsWith("404")) throw e;
+        db = taffy();
+    }
 
-    return {
+    db.save = async function() {
+        let resp = await repository.writeFile(branch, path, 
+                              btoa(db().stringify()), `update ${new Date()}`, { 
+                                     encode: false,
+                                     author: {
+                                         name: user,
+                                         email: `${user}@users.noreply.github.com`
+                                     }
+                                 }); 
+        return resp.status === 200;
     };
+
+    return db;
 }
 
-export default {
-    create,
-};
+export default create;
